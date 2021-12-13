@@ -10,7 +10,7 @@
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="0" class="demo-ruleForm">
           <div class="myInput username2">
             <el-form-item prop="tel">
-              <el-input class="search1 search2 search3" prefix-icon="el-icon-user" v-model="ruleForm.username" placeholder="请输入手机号" clearable="true"></el-input>
+              <el-input class="search1 search2 search3" prefix-icon="el-icon-user" v-model="ruleForm.username" placeholder="请输入手机号" :clearable="true"></el-input>
             </el-form-item>
           </div>
           <div class="myInput password">
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 
 export default {
   data () {
@@ -95,25 +95,41 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          axios.post('http://localhost:8082/register',
-              {
-                username: this.ruleForm.username,
-                password: this.ruleForm.password
-              }
-          ).then(response => {
-            let res = response.data
-            if (res.status === 'success') { // 显示登录结果
-              this.$message({showClose: true, message: '注册成功', type: 'success', center: true})
-              this.$router.push({
-                path: '/login'})
-            } else if (res.status === 'error') { // 显示登录结果
-              this.$message({showClose: true, message: res.msg, type: 'error', center: true})
-            }
-            // eslint-disable-next-line handle-callback-err
-          })
-        } else {
-           this.$message({showClose: true, message: '抱歉！注册失败！请稍后重试！', type: 'error', center: true})
-          return false
+        //   axios.post('http://localhost:8082/register',
+        //       {
+        //         username: this.ruleForm.username,
+        //         password: this.ruleForm.password
+        //       }
+        //   ).then(response => {
+        //     let res = response.data
+        //     if (res.status === 'success') { // 显示登录结果
+        //       this.$message({showClose: true, message: '注册成功', type: 'success', center: true})
+        //       this.$router.push({
+        //         path: '/login'})
+        //     } else if (res.status === 'error') { // 显示登录结果
+        //       this.$message({showClose: true, message: res.msg, type: 'error', center: true})
+        //     }
+        //     // eslint-disable-next-line handle-callback-err
+        //   })
+        // } else {
+        //    this.$message({showClose: true, message: '抱歉！注册失败！请稍后重试！', type: 'error', center: true})
+        //   return false
+        // }
+        var sum = localStorage.length
+        var check = true
+        for (let index = 0; index < sum; index++) {
+          var key = localStorage.key(index);
+          var value = localStorage.getItem(key);
+          if (this.ruleForm.username == key && this.ruleForm.password == value) {
+            check = false
+            this.$message({showClose: true, message: '注册失败', type: 'error', center: true});
+         } 
+        }
+        if(check){
+        localStorage.setItem(this.ruleForm.username, this.ruleForm.password)
+        this.$message({showClose: true, message: '注册成功', type: 'success', center: true})
+        this.$router.push({ path: '/login'})
+        }  
         }
       })
     },

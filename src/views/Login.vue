@@ -59,18 +59,36 @@ export default {
   },
   methods: {
     login() {
-      this.$axios.post('http://localhost:8082/login', {
-        username: this.form.username,
-        password: this.form.password
-      }).then(Response => {
-        if(Response.data.status == 'success'){
-          this.$store.commit('change_user', Response.data.result.username)
+      // this.$axios.post('http://localhost:8082/login', {
+      //   username: this.form.username,
+      //   password: this.form.password
+      // }).then(Response => {
+      //   if(Response.data.status == 'success'){
+      //     this.$store.commit('change_user', Response.data.result.username)
+      //     this.$message({showClose: true, message: '登陆成功', type: 'success', center: true})
+      //     this.$router.push({name: 'Home'})
+      //   }else {
+      //     this.$message({showClose: true, message: Response.data.msg, type: 'error', center: true})
+      //   }
+      // })
+      var check = true
+      var sum = localStorage.length
+      console.log(this.$store)
+       for (var i = 0; i < sum; i++) {
+         var key = localStorage.key(i);
+         var value = localStorage.getItem(key);
+         if (this.form.username == key && this.form.password == value) {
+           check = false
+          this.$store.commit('change_user', this.form.username)
+          //  localStorage.setItem(token, true)
           this.$message({showClose: true, message: '登陆成功', type: 'success', center: true})
           this.$router.push({name: 'Home'})
-        }else {
-          this.$message({showClose: true, message: Response.data.msg, type: 'error', center: true})
-        }
-      })
+         }
+       }
+       console.log(this.$store)
+       if(check){
+         this.$message({showClose: true, message: "登陆失败", type: 'error', center: true})
+       }
     },
     register() {
       this.$router.push({name: 'Register'});

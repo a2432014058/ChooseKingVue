@@ -210,7 +210,6 @@ export default {
         }
       }
       setTimeout(() => {
-        
         this.rdisabled = false;
         this.points = "- -";
       }, this.aniInt * this.timer + 500);
