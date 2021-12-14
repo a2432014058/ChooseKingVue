@@ -18,12 +18,6 @@
           <el-input-number v-model="startPos" :disabled="disabled" :min="1" :max="totalNum" label="起始位置" />
         </el-col>
       </el-row>
-     <el-row type="flex" justify="space-between" class="h-row"> 
-       <el-col :span="14"> <h2>动画间隔 / ms</h2> </el-col>
-       <el-col :span="10" class="v-col">
-         <el-slider :disabled="disabled" v-model="aniInt" :min="200" :max="1000" label="动画间隔" :step="10" style="width: 100%" />
-       </el-col>
-   </el-row>
       <el-row type="flex" justify="space-between" class="h-row last">
         <el-col :span="14"> <h2>开始游戏</h2> </el-col>
         <el-col :span="10" class="v-col">
@@ -52,25 +46,24 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
-import rollADie from "roll-a-die";
+import { mapState, mapMutations } from "vuex"
+import rollADie from "roll-a-die"
 
-function response(res) {
-  // returns an array of the values from the dice
-  console.log(res);
+ function response(res) {
+  console.log(res)
 }
 
 function rollDiceWithValues(value) {
-  const element = document.getElementById("dice-box");
-  const numberOfDice = 1;
-  const valuesToThrow = [value];
+  const element = document.getElementById("dice-box")
+  const numberOfDice = 1
+  const valuesToThrow = [value]
   const options = {
     element,
     numberOfDice,
     values: valuesToThrow,
     callback: response,
-  };
-  rollADie(options);
+  }
+  rollADie(options)
 }
 export default {
   name: "ToolBar",
@@ -84,14 +77,14 @@ export default {
       rdisabled: true,
       points: "- -",
       cPersons: [],
-    };
+    }
   },
   computed: {
     ...mapState(["persons", "marker"]),
   },
   mounted() {
-    this.initPersons(this.totalNum);
-    this.selectPerson(this.startPos - 1);
+    this.initPersons(this.totalNum)
+    this.selectPerson(this.startPos - 1)
   },
   methods: {
     ...mapMutations([
@@ -105,14 +98,14 @@ export default {
     ]),
     // 计算Persons中对应的序号
     getCurIndex(nameIndex) {
-      var bias = 0;
+      var bias = 0
       for (var i = 0; i < this.cPersons.length; i++) {
         if (this.cPersons[i].left === true) {
-          ++bias;
-          continue;
+          ++bias
+          continue
         }
         if (this.cPersons[i].index === nameIndex) {
-          return i - bias;
+          return i - bias
         }
       }
     },
@@ -120,116 +113,106 @@ export default {
     shinePerson(index, mark = true) {
       setTimeout(() => {
         if (mark) {
-          this.setMarker(index);
+          this.setMarker(index)
         }
-        this.selectPerson(index);
-      }, this.aniInt * this.timer);
+        this.selectPerson(index)
+      }, this.aniInt * this.timer)
       setTimeout(() => {
-        this.deselectPerson(index);
-      }, this.aniInt * this.timer + this.aniInt / 4);
+        this.deselectPerson(index)
+      }, this.aniInt * this.timer + this.aniInt / 4)
       setTimeout(() => {
-        this.selectPerson(index);
-      }, this.aniInt * this.timer + this.aniInt / 4);
+        this.selectPerson(index)
+      }, this.aniInt * this.timer + this.aniInt / 4)
       setTimeout(() => {
-        this.deselectPerson(index);
-      }, this.aniInt * this.timer++ + (this.aniInt / 4));
+        this.deselectPerson(index)
+      }, this.aniInt * this.timer++ + (this.aniInt / 4))
     },
     // 重置游戏
     remake() {
-      this.clearPersons();
-      this.initPersons(this.totalNum);
-      this.selectPerson(this.startPos - 1);
-      this.rdisabled = true;
-      this.disabled = false;
+      this.clearPersons()
+      this.initPersons(this.totalNum)
+      this.selectPerson(this.startPos - 1)
+      this.rdisabled = true
+      this.disabled = false
     },
     // 开始游戏
     play() {
-      this.disabled = true;
-      this.rdisabled = true;
-      this.timer = 0;
-      var i, j, choice;
-      // 清空cPersons
+      this.disabled = true
+      this.rdisabled = true
+      this.timer = 0
+      var i, j, choice
       while (this.cPersons.length > 0) {
-        this.cPersons.pop();
+        this.cPersons.pop()
       }
-      // 初始化cPersons
       for (i = 0; i < this.totalNum; ++i) {
         this.cPersons.push({
           index: i + 1,
           left: false,
-        });
+        })
       }
-      // 初始化各节点的前驱、后驱节点
       for (i = 0; i < this.totalNum; i++) {
-        this.cPersons[i].prior = this.cPersons[(i - 1 + this.totalNum) % this.totalNum];
-        this.cPersons[i].next = this.cPersons[(i + 1) % this.totalNum];
+        this.cPersons[i].prior = this.cPersons[(i - 1 + this.totalNum) % this.totalNum]
+        this.cPersons[i].next = this.cPersons[(i + 1) % this.totalNum]
       }
-      // 起始节点
-      var cur = this.cPersons[this.startPos - 1];
+      var cur = this.cPersons[this.startPos - 1]
       for (i = 0; i < this.totalNum - 1; i++) {
         choice = Math.floor(Math.random() * 6) + 1;
-        // 模拟投骰子
         ((c) => {
           setTimeout(() => {
-            rollDiceWithValues(c);
-          }, this.aniInt * this.timer);
+            rollDiceWithValues(c)
+          }, this.aniInt * this.timer)
           setTimeout(() => {
-            this.points = c;
-          }, this.aniInt * this.timer + 500);
-        })(choice);
-        // 投骰子延时
-        this.timer += 1000 / this.aniInt;
+            this.points = c
+          }, this.aniInt * this.timer + 500)
+        })(choice)
+        this.timer += 1000 / this.aniInt
         for (j = 0; j < choice; j++) {
-          this.shinePerson(this.getCurIndex(cur.index));
-          // 通过next寻找下一节点
-          cur = cur.next;
+          this.shinePerson(this.getCurIndex(cur.index))
+          cur = cur.next
         }
         cur = cur.prior;
         ((i) =>
           setTimeout(() => {
-            this.leavePerson(i);
-          }, this.aniInt * this.timer++))(this.getCurIndex(cur.index));
-        // 用于查找元素操作时的id
-        cur.left = true;
-        // 循环列表删除节点，修改prior节点的next指针及next节点的prior指针
-        cur.prior.next = cur.next;
-        cur.next.prior = cur.prior;
-        // cur指向下一节点
-        cur = cur.next;
+            this.leavePerson(i)
+          }, this.aniInt * this.timer++))(this.getCurIndex(cur.index))
+        cur.left = true
+        cur.prior.next = cur.next
+        cur.next.prior = cur.prior
+        cur = cur.next
         if (i != this.totalNum - 2) {
           this.shinePerson(this.getCurIndex(cur.index), false);
           ((i) =>
             setTimeout(() => {
-              this.selectPerson(i);
-            }, this.aniInt * this.timer++))(this.getCurIndex(cur.index));
+              this.selectPerson(i)
+            }, this.aniInt * this.timer++))(this.getCurIndex(cur.index))
         }else{
             ((i) =>
             setTimeout(() => {
-              this.king(i);
-            }, this.aniInt * this.timer++))(this.getCurIndex(cur.index));
+              this.king(i)
+            }, this.aniInt * this.timer++))(this.getCurIndex(cur.index))
         }
       }
       setTimeout(() => {
-        this.rdisabled = false;
-        this.points = "- -";
-      }, this.aniInt * this.timer + 500);
+        this.rdisabled = false
+        this.points = "- -"
+      }, this.aniInt * this.timer + 500)
     },
   },
   watch: {
     totalNum(newValue) {
-      this.clearPersons();
-      this.initPersons(newValue);
+      this.clearPersons()
+      this.initPersons(newValue)
       if (this.startPos > newValue) {
-        this.startPos = newValue;
+        this.startPos = newValue
       }
-      this.selectPerson(this.startPos - 1);
+      this.selectPerson(this.startPos - 1)
     },
     startPos(newValue, oldValue) {
-      this.deselectPerson(oldValue - 1);
-      this.selectPerson(newValue - 1);
+      this.deselectPerson(oldValue - 1)
+      this.selectPerson(newValue - 1)
     },
   },
-};
+}
 </script>
 
 <style scoped>
