@@ -18,18 +18,22 @@ Vue.prototype.$qs = qs;
 new Vue({
     router,
     store,
+  template: '<layout/>',
     render: h => h(App)
 }).$mount('#app')
 
 
 router.beforeEach((to, from, next) => {
-    console.log(store.state)
+    if (to.meta.title) {
+        document.title = to.meta.title;
+    }
     if (to.meta.requireAuth) {
-        if (store.state.recorded_username != '') {
+        if (store.state.recorded_username !== '') {
             next();
         } else {
-            // next({path: "/login"});
-            this.$router.push({ path: '/login'})
+            this.$router.push({path: '/login'}).then(r => (
+                console.log(r)
+            ))
         }
     } else {
         next();
@@ -38,7 +42,7 @@ router.beforeEach((to, from, next) => {
 //     if (to.path == "/home") {
 //     // 此时必须要有token
 //       if (token) {
-//       next(); 
+//       next();
 //     } else {
 //       Vue.prototype.$toast("请先登录");
 //       setTimeout(() => {

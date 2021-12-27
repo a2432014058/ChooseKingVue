@@ -2,9 +2,8 @@
   <div>
     <el-row>
       <el-col :span="12">
-        <img class="loginImg" src="../static/left3.png">
+        <img class="loginImg" src="../static/mky.png">
       </el-col>
-
       <el-col :span="12">
         <div class="title"><img class="head" src="../static/head1.gif"></div>
         <el-form :model="form" status-icon :rules="rules" ref="ruleForm" label-width="0">
@@ -71,7 +70,7 @@ export default {
       //     this.$message({showClose: true, message: Response.data.msg, type: 'error', center: true})
       //   }
       // })
-      var check = true
+    var check = true
       var sum = localStorage.length
       console.log(this.$store)
        for (var i = 0; i < sum; i++) {
@@ -103,7 +102,7 @@ export default {
 }
 
 .loginImg {
-  width: 700px;
+  width: 500px;
   margin: 0 auto;
   float: right;
 }

@@ -2,7 +2,7 @@
   <div>
     <el-row>
       <el-col :span="12">
-        <img class="regImg"  alt="text" src="../static/left3.png">
+        <img class="regImg"  alt="text" src="../static/resgister.png">
       </el-col>
 
       <el-col :span="12">
@@ -10,7 +10,7 @@
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="0" class="demo-ruleForm">
           <div class="myInput username2">
             <el-form-item prop="tel">
-              <el-input class="search1 search2 search3" prefix-icon="el-icon-user" v-model="ruleForm.username" placeholder="请输入手机号" :clearable="true"></el-input>
+              <el-input class="search1 search2 search3" prefix-icon="el-icon-user" v-model="ruleForm.username" placeholder="请输入账号" :clearable="true"></el-input>
             </el-form-item>
           </div>
           <div class="myInput password">
@@ -73,7 +73,13 @@ export default {
       ruleForm: {
         username: '',
         password: '',
-        checkPass: ''
+        checkPass: '',
+        res:  [
+          {
+          username:'ad',
+          password:'ad'
+      }
+        ]
       },
       rules: {
         password: [{
@@ -123,13 +129,13 @@ export default {
           if (this.ruleForm.username == key && this.ruleForm.password == value) {
             check = false
             this.$message({showClose: true, message: '注册失败', type: 'error', center: true});
-         } 
+         }
         }
         if(check){
         localStorage.setItem(this.ruleForm.username, this.ruleForm.password)
         this.$message({showClose: true, message: '注册成功', type: 'success', center: true})
         this.$router.push({ path: '/login'})
-        }  
+        }
         }
       })
     },

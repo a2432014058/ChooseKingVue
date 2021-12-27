@@ -5,18 +5,17 @@
     <chart />
     </div>
     <div id="tool-bar">
-      <tool-bar />
+      <justice />
     </div>
   </div>
 </template>
-
 <script>
 import Chart from "../views/Chart";
-import ToolBar from "../views/ToolBar";
+import justice from "../views/justice";
 export default{
   components: {
     Chart,
-    ToolBar,
+    justice,
   },
   data() {
     return {
@@ -45,8 +44,8 @@ body {
 }
 #building{
   background:url("../static/land.png");
-  width:100%;		
-  height:100%;		
+  width:100%;
+  height:100%;
   position:fixed;
   background-size:100% 100%;
 }

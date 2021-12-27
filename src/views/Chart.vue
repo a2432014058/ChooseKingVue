@@ -4,6 +4,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import { globalBus } from '../store/index';
 export default {
   name: "Chart",
   data() {
@@ -16,6 +17,8 @@ export default {
   },
   mounted() {
     this.initChart();
+    this.save()
+    this.load()
   },
   methods: {
     ...mapMutations(["initPersons", "clearPersons", "leavePerson"]),
@@ -52,17 +55,34 @@ export default {
         this.chartInstance.resize();
       };
     },
+    load() {
+      globalBus.$on('data', (da) => {
+        console.log(da)
+        const data= JSON.parse(localStorage.getItem('data'))
+        console.log(data)
+        this.chartInstance.setOption(data)
+      });
+    },
+    save() {
+      globalBus.$on('save', (da) => {
+        console.log(da)
+        const data =JSON.stringify(this.chartInstance.getOption())
+        console.log(data)
+        localStorage.setItem("data",data)
+      });
+    }
   },
   watch: {
     persons() {
-      this.chartInstance.setOption({
-        series: [
-          {
-            type: "graph",
-            data: this.persons.concat(this.outPersons).concat(this.showMarker),
-          },
-        ],
-      });
+     const data = {
+       series: [
+         {
+           type: "graph",
+           data: this.persons.concat(this.outPersons).concat(this.showMarker),
+         },
+       ],
+     }
+     this.chartInstance.setOption(data)
     },
   },
 };

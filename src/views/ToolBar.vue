@@ -48,7 +48,6 @@
 <script>
 import { mapState, mapMutations } from "vuex"
 import rollADie from "roll-a-die"
-
  function response(res) {
   console.log(res)
 }
@@ -221,6 +220,7 @@ export default {
   height: 100%;
   display: flex;
   flex-wrap: wrap;
+  /* background:url("../static/background.png"); */
 }
 .box {
   width: 85%;

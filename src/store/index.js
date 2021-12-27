@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+
 Vue.use(Vuex)
 
 const actions = {
 
 };
-
+export const globalBus = new Vue();
 const state = {
     recorded_username: '',
     persons: [],
@@ -14,6 +15,7 @@ const state = {
     showMarker: [],
     dis: 150,
     radius: 0,
+
 };
 const mutations = {
     change_user(state, username) {
@@ -21,6 +23,7 @@ const mutations = {
     },
     // 初始化数组
     initPersons(state, num) {
+        console.log(2222)
         state.radius = Math.sqrt(num - 1) * state.dis;
         var angle = 2 * Math.PI / num, i;
         for (i = 0; i < num; i++) {
@@ -28,7 +31,7 @@ const mutations = {
                 name: (i + 1).toString(),
                 x: state.radius * Math.sin(angle * i),
                 y: -state.radius * Math.cos(angle * i),
-                symbolSize: 60,
+                symbolSize: 70,
                 symbol:'image://'+require('@/static/othermonkney.png'),
                 itemStyle: {
                     color: "#409EFF",
@@ -60,7 +63,7 @@ const mutations = {
         state.outPersons.push(newPersons.splice(index, 1)[0]);
         state.radius = Math.sqrt(newPersons.length - 1) * state.dis;
         state.outPersons[state.outPersons.length - 1].symbol='image://'+require('@/static/monkney.png'),
-        state.outPersons[state.outPersons.length - 1].value = "一只失败的猴儿"
+            state.outPersons[state.outPersons.length - 1].value = "一只失败的猴儿"
         var angle = 2 * Math.PI / newPersons.length, i;
         // 重新计算未出列人的坐标
         for (i = 0; i < newPersons.length; i++) {
@@ -74,6 +77,22 @@ const mutations = {
                 state.outPersons[i].x = (i % 8 + 1 - middle) * state.dis;
             }
             state.outPersons[i].y = state.radius + state.dis * (Math.floor(i / 8) + 1);
+        }
+        state.persons = newPersons;
+    },
+    // 一人
+    addPerson(state) {
+        var newPersons = state.persons.concat([]);
+        // 一人
+        state.radius = Math.sqrt(newPersons.length + 1) * state.dis;
+        newPersons.push(newPersons.pop());
+        newPersons[newPersons.length + 1].symbol='image://'+require('@/static/choosemonkney.png'),
+            newPersons[newPersons.length + 1].value = "一只机智的猴儿"
+        var angle = 2 * Math.PI / newPersons.length, i;
+        // 重新计算未出列人的坐标
+        for (i = 0; i < newPersons.length; i++) {
+            newPersons[i].x = state.radius * Math.sin(angle * i);
+            newPersons[i].y = -state.radius * Math.cos(angle * i);
         }
         state.persons = newPersons;
     },
@@ -95,10 +114,12 @@ const mutations = {
         newPersons[index].symbol='image://'+require('@/static/King.png')
         newPersons[index].symbolSize=200
         state.persons = newPersons
+        localStorage.setItem("reed", JSON.stringify(state))
+        console.log(state)
     },
     // 报数标记
     setMarker(state, index) {
-        var angle = 2 * Math.PI / state.persons.length, mark = ['①', '②', '③', '④', '⑤', '⑥'], i;
+        var angle = 2 * Math.PI / state.persons.length, mark = ['①', '②', '③', '④', '⑤', '⑥','⑦','⑧','⑨','⑩'], i;
         for (i = 0; i < state.marker.length; ++i) {
             if (state.marker[i].i === index) {
                 // 置重复标记的show属性
@@ -127,7 +148,6 @@ const mutations = {
         state.showMarker = state.marker.filter((e) => e.show);
     },
 };
-
 export default new Vuex.Store({
     actions,
     mutations,
